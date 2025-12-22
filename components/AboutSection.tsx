@@ -62,7 +62,7 @@ const FlightMapCard: React.FC = () => {
                     transition={{ duration: 4, ease: "easeInOut", repeat: Infinity, repeatDelay: 0.5 }}
                     style={{ offsetPath: "path('M 80 300 Q 200 120 320 100')", offsetRotate: "auto" }}
                 >
-                    <svg viewBox="0 0 24 24" className="w-12 h-12 drop-shadow-lg transform -rotate-90">
+                    <svg viewBox="0 0 24 24" className="w-12 h-12 drop-shadow-lg transform rotate-90">
                         <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z" fill="white" stroke="#e2e8f0" strokeWidth="0.5" />
                         <path d="M 11.5 9 L 11.5 3.5" stroke="#cbd5e1" strokeWidth="1" />
                         <circle cx="11.5" cy="6" r="1" fill="#ef4444" />

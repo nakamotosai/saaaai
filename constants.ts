@@ -1,11 +1,17 @@
 import { Project } from './types';
+import heroBackground from './assets/hero.jpg';
+import project1 from './assets/1.png';
+import project2 from './assets/2.png';
+import project3 from './assets/3.png';
+import project4 from './assets/4.png';
+import project5 from './assets/5.png';
 
 // --- 全局图片资源配置 (SITE IMAGES) ---
 // 可以在这里修改网站的背景图、装饰纹理等
 export const SITE_IMAGES = {
   // 网站主背景图 (Tokyo Urban Night)
-  mainBackground: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&w=2994&auto=format&fit=crop",
-  
+  mainBackground: heroBackground,
+
   // 关于我们卡片的背景纹理 (Subtle Texture)
   aboutCardTexture: "https://images.unsplash.com/photo-1493246507139-91e8fad9978e?q=80&w=2940&auto=format&fit=crop"
 };
@@ -60,7 +66,7 @@ export const PROJECTS: Project[] = [
     id: 1,
     title: "从日本看中国",
     category: "NEWS AGGREGATOR",
-    image: "https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=1000&auto=format&fit=crop", 
+    image: project1,
     description: "日媒发布的中国新闻聚合站",
     url: "https://cn.saaaai.com/"
   },
@@ -68,7 +74,7 @@ export const PROJECTS: Project[] = [
     id: 2,
     title: "中日说",
     category: "AI VOICE TOOL",
-    image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000&auto=format&fit=crop", 
+    image: project2,
     description: "极速AI语音输入助手",
     // url: "#" 
   },
@@ -76,7 +82,7 @@ export const PROJECTS: Project[] = [
     id: 3,
     title: "假装在东京",
     category: "BLOG & INSIGHTS",
-    image: "https://images.unsplash.com/photo-1542051841857-5f90071e7989?q=80&w=1000&auto=format&fit=crop", 
+    image: project3,
     description: "移民日本以来的200多篇心得体会",
     // url: "#"
   },
@@ -84,7 +90,7 @@ export const PROJECTS: Project[] = [
     id: 4,
     title: "fluxJP心流日语",
     category: "EDUCATION",
-    image: "https://images.unsplash.com/photo-1528164344705-47542687000d?q=80&w=1000&auto=format&fit=crop",
+    image: project4,
     description: "科学方法极速背日语",
     url: "https://jp.saaaai.com/"
   },
@@ -92,7 +98,7 @@ export const PROJECTS: Project[] = [
     id: 5,
     title: "毒舌戒烟",
     category: "AI ASSISTANT",
-    image: "https://images.unsplash.com/photo-1520697830682-bbb6e85e2b0b?q=80&w=1000&auto=format&fit=crop",
+    image: project5,
     description: "一个想骂醒你的戒烟助手",
     url: "https://quit.saaaai.com/"
   }

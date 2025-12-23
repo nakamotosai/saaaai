@@ -8,19 +8,39 @@ import { MouseGlow } from './components/MouseGlow';
 import { SITE_IMAGES } from './constants';
 
 function App() {
+  const [isMobile, setIsMobile] = React.useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    // Force browser to NOT restore scroll position on refresh
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+
+    // Reset scroll to top on mount (F5 refresh)
+    window.scrollTo(0, 0);
+
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   const { scrollYProgress } = useScroll();
 
   // Background Parallax: Move slightly slower than scroll
-  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
-  const bgScale = useTransform(scrollYProgress, [0, 0.5], [1, 1.1]);
+  // We start at -5% and move to 5%, with a higher base scale (1.15) to ensure no black edges
+  const bgY = useTransform(scrollYProgress, [0, 1], ["-5%", isMobile ? "2%" : "5%"], { clamp: true });
+  const bgScale = useTransform(scrollYProgress, [0, 0.5], [1.15, isMobile ? 1.18 : 1.25], { clamp: true });
 
   // OPTIMIZATION: Removed dynamic 'filter' (blur) which causes heavy lag.
   // Instead, we use a simple opacity overlay to darken the background as we scroll.
-  const overlayOpacity = useTransform(scrollYProgress, [0.1, 0.7], [0.3, 0.7]);
+  const overlayOpacity = useTransform(scrollYProgress, [0.1, 0.7], [0.3, 0.7], { clamp: true });
 
   return (
-    <div className="relative w-full bg-black min-h-screen font-sans selection:bg-purple-500/30 selection:text-cyan-200">
+    <div className="relative w-full bg-black min-h-screen font-sans selection:bg-indigo-500/30 selection:text-cyan-200">
       <Navbar />
 
       {/* Invisible Mouse Glow (z-5) */}
@@ -52,7 +72,7 @@ function App() {
       </div>
 
       {/* Scrollable Content (z-10) */}
-      <main className="relative z-10">
+      <main className="relative z-10 flex flex-col gap-12 md:gap-0">
         <ProjectGallery />
         <AboutSection />
         <Footer />

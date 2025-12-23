@@ -5,6 +5,14 @@ import project2 from './assets/2.png';
 import project3 from './assets/3.png';
 import project4 from './assets/4.png';
 import project5 from './assets/5.png';
+import photoA from './assets/a.png';
+import photoB from './assets/b.png';
+import photoC from './assets/c.png';
+import photoD from './assets/d.png';
+import photoE from './assets/e.png';
+import photoF from './assets/f.png';
+import photoG from './assets/g.png';
+import photoH from './assets/h.png';
 
 // --- 全局图片资源配置 (SITE IMAGES) ---
 // 可以在这里修改网站的背景图、装饰纹理等
@@ -12,18 +20,23 @@ export const SITE_IMAGES = {
   // 网站主背景图 (Tokyo Urban Night)
   mainBackground: heroBackground,
 
-  // 关于我们卡片的背景纹理 (Subtle Texture)
-  aboutCardTexture: "https://images.unsplash.com/photo-1493246507139-91e8fad9978e?q=80&w=2940&auto=format&fit=crop"
 };
+
+export const PHOTO_WALL = [
+  { id: 1, front: photoA, back: photoE },
+  { id: 2, front: photoB, back: photoF },
+  { id: 3, front: photoC, back: photoG },
+  { id: 4, front: photoD, back: photoH },
+];
 
 // --- 个人信息配置 (PROFILE) ---
 export const PROFILE = {
   name: "中本蔡",
-  role: "上海人 / 现居东京",
-  bio: "探索AI与生活的边界",
-  yearsInJapan: "8年+",
+  role: "上海人在东京",
+  bio: "从零开始的AI编程生活",
+  yearsInJapan: "自2017年",
   officialAccount: "假装在东京", // 公众号名称
-  officialAccountUrl: "#", // 公众号链接 (如果有)
+  officialAccountUrl: "https://mp.weixin.qq.com/s/aBGdpk2tCOny1RPp4S58PQ", // 公众号链接 (如果有)
   avatarIcon: "User", // 图标名称 (仅供参考，修改需改代码)
 };
 
@@ -38,9 +51,9 @@ export const SITE_META = {
 
 // --- 关于我板块配置 (ABOUT SECTION) ---
 export const ABOUT = {
-  titleStart: "Shanghai",
+  titleStart: "Shanghai >",
   titleEnd: "Tokyo",
-  description: "我是生活在东京的上海人，80后，拥有一儿一女的幸福奶爸。\n热爱探索AI技术的边界，也享受写作带来的思考。在代码与文字之间，记录移民日本后的心得体会。",
+  description: "我是老蔡，生活在东京的80后上海奶爸。\n写过上百万字的文章，但不会写一行代码，刚接触AI不久。\n在代码与文字之间，记录移民日本后的心得体会。",
   flightPath: {
     start: "SHANGHAI",
     end: "TOKYO"
@@ -50,12 +63,12 @@ export const ABOUT = {
     profileList: [
       "80后 / 创业者",
       "上海出身 / 现居东京",
-      "一儿一女"
+      "一儿一女 / 定居8年+"
     ],
     interestsTitle: "Interests",
     interestList: ['AI', '写作', '摄影', '美食', '旅游', '交友']
   },
-  ctaButton: "LETS TALK",
+  ctaButton: "联系本人",
   wechatId: "a16z88"
 };
 
@@ -65,41 +78,41 @@ export const PROJECTS: Project[] = [
   {
     id: 1,
     title: "从日本看中国",
-    category: "NEWS AGGREGATOR",
+    category: "日本媒体视角下的中国新闻",
     image: project1,
-    description: "日媒发布的中国新闻聚合站",
+    description: "原汁原味、实时抓取",
     url: "https://cn.saaaai.com/"
   },
   {
     id: 2,
     title: "中日说",
-    category: "AI VOICE TOOL",
+    category: "说中文出日文的AI输入助手",
     image: project2,
-    description: "极速AI语音输入助手",
-    // url: "#" 
+    description: "毫秒级语音识别，快到没边",
+    url: "https://input.saaaai.com/"
   },
   {
     id: 3,
     title: "假装在东京",
-    category: "BLOG & INSIGHTS",
+    category: "移民日本以来200多篇心得记录",
     image: project3,
-    description: "移民日本以来的200多篇心得体会",
-    // url: "#"
+    description: "一路走来，感谢各位支持",
+    url: "https://mp.weixin.qq.com/s/aBGdpk2tCOny1RPp4S58PQ"
   },
   {
     id: 4,
-    title: "fluxJP心流日语",
-    category: "EDUCATION",
+    title: "心流日语",
+    category: "基于SRS原理极速背日语单词",
     image: project4,
-    description: "科学方法极速背日语",
+    description: "（早期开发阶段，敬请期待）",
     url: "https://jp.saaaai.com/"
   },
   {
     id: 5,
     title: "毒舌戒烟",
-    category: "AI ASSISTANT",
+    category: "一个想骂醒你的AI戒烟助手",
     image: project5,
-    description: "一个想骂醒你的戒烟助手",
+    description: "（早期开发阶段，敬请期待）",
     url: "https://quit.saaaai.com/"
   }
 ];
@@ -113,7 +126,7 @@ export const SOCIAL_LINKS = [
 
 // --- 导航栏链接 (NAV) ---
 export const NAV_LINKS = [
-  { label: "PROJECTS", id: "projects" },
-  { label: "ABOUT", id: "about" },
-  { label: "CONTACT", id: "contact" }
+  { label: "我的项目", id: "projects" },
+  { label: "关于我", id: "about" },
+  { label: "联系我", id: "contact" }
 ];

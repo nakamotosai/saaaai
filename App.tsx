@@ -9,6 +9,7 @@ import { SITE_IMAGES } from './constants';
 
 function App() {
   const [isMobile, setIsMobile] = React.useState(false);
+  const [footerVisible, setFooterVisible] = React.useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
@@ -74,8 +75,8 @@ function App() {
       {/* Scrollable Content (z-10) */}
       <main className="relative z-10 flex flex-col gap-12 md:gap-0">
         <ProjectGallery />
-        <AboutSection />
-        <Footer />
+        <AboutSection onAnimationComplete={() => setFooterVisible(true)} isMobile={isMobile} />
+        <Footer canShow={footerVisible} />
       </main>
     </div>
   );

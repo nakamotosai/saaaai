@@ -1,23 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Users, Heart, MessageCircle } from 'lucide-react';
-import { ABOUT, SITE_META, PHOTO_WALL } from '../constants';
+import { ABOUT, SITE_META, PHOTO_WALL, SEIGAIHA_PATTERN } from '../constants';
 
 const PhotoCard: React.FC<{ pair: typeof PHOTO_WALL[0]; index: number }> = ({ pair, index }) => {
     const [isFlipped, setIsFlipped] = useState(false);
+    const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     // Random auto-flip logic: 2-5 seconds interval
     useEffect(() => {
-        const triggerFlip = () => {
-            const delay = Math.random() * 3000 + 2000; // Random delay between 2-5 seconds
-            return setTimeout(() => {
-                setIsFlipped(v => !v); // Must flip
-                triggerFlip();
-            }, delay);
+        const scheduleFlip = () => {
+            // Random duration between 2000ms (2s) and 5000ms (5s)
+            const nextDelay = Math.random() * 3000 + 2000;
+
+            timeoutRef.current = setTimeout(() => {
+                setIsFlipped(prev => !prev);
+                scheduleFlip();
+            }, nextDelay);
         };
 
-        const timer = triggerFlip();
-        return () => clearTimeout(timer);
+        scheduleFlip();
+
+        return () => {
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
+            }
+        };
     }, []);
 
     return (
@@ -72,25 +80,15 @@ const PhotoCard: React.FC<{ pair: typeof PHOTO_WALL[0]; index: number }> = ({ pa
     );
 };
 
-const PhotoWall: React.FC<{ onPatternLoaded: () => void }> = ({ onPatternLoaded }) => {
+const PhotoWall: React.FC = () => {
     return (
-        <div className="w-full h-[400px] md:h-full grid grid-cols-2 grid-rows-2 gap-3 md:gap-4 p-3 md:p-4 bg-white/5 border border-white/20 rounded-[3rem] shadow-2xl relative overflow-hidden group">
-            {/* Inner Blur Layer (Prevents popping during entry animation) */}
-            <div className="absolute inset-0 backdrop-blur-md z-[-1]" />
+        <div className="w-full h-[400px] md:h-full grid grid-cols-2 grid-rows-2 gap-3 md:gap-4 p-3 md:p-4 bg-black/20 backdrop-blur-md border border-white/20 rounded-[3rem] shadow-2xl relative overflow-hidden group">
 
             {/* Seigaiha Pattern Overlay */}
-            <motion.div
-                variants={{
-                    hidden: { opacity: 0 },
-                    visible: {
-                        opacity: 0.02,
-                        transition: { duration: 1.5, ease: "easeOut" }
-                    }
-                }}
-                onAnimationComplete={onPatternLoaded}
-                className="absolute inset-0 pointer-events-none z-0 transition-opacity group-hover:opacity-[0.04]"
+            <div
+                className="absolute inset-0 pointer-events-none z-0 transition-opacity group-hover:opacity-[0.04] opacity-[0.02]"
                 style={{
-                    backgroundImage: `url("data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' width='120' height='60' viewBox='0 0 120 60'%3E%3Cpath fill='%23ffffff' d='M13.005 31.426a55 55 0 0 1 93.99 0 60 60 0 0 0-9.89 3.114 45 45 0 0 0-74.21 0 60 60 0 0 0-9.89-3.114zm14.499 5.249a40 40 0 0 1 64.992 0 60 60 0 0 0-8.496 5.325 30 30 0 0 0-48 0 60 60 0 0 0-8.496-5.325zm12.371 8.493a25 25 0 0 1 40.25 0 60 60 0 0 0-7.063 7.458 15 15 0 0 0-26.124 0 60 60 0 0 0-7.063-7.458zm10.477 12.202a10 10 0 0 1 19.296 0 60 60 0 0 0-1.897 3.133 60 60 0 0 0-15.502 0 60 60 0 0 0-1.897-3.133zM-46.995 61.426a55 55 0 0 1 93.99 0 60 60 0 0 0-9.89 3.114 45 45 0 0 0-74.21 0 60 60 0 0 0-9.89-3.114zm14.499 5.249a40 40 0 0 1 64.992 0 60 60 0 0 0-8.496 5.325 30 30 0 0 0-48 0 60 60 0 0 0-8.496-5.325zM73.005 61.426a55 55 0 0 1 93.99 0 60 60 0 0 0-9.89 3.114 45 45 0 0 0-74.21 0 60 60 0 0 0-9.89-3.114zm14.499 5.249a40 40 0 0 1 64.992 0 60 60 0 0 0-8.496 5.325 30 30 0 0 0-48 0 60 60 0 0 0-8.496-5.325zM-46.995 1.426a55 55 0 0 1 93.99 0 60 60 0 0 0-9.89 3.114 45 45 0 0 0-74.21 0 60 60 0 0 0-9.89-3.114zm14.499 5.249a40 40 0 0 1 64.992 0 60 60 0 0 0-8.496 5.325 30 30 0 0 0-48 0 60 60 0 0 0-8.496-5.325zm12.371 8.493a25 25 0 0 1 40.25 0 60 60 0 0 0-7.063 7.458 15 15 0 0 0-26.124 0 60 60 0 0 0-7.063-7.458zm10.477 12.202a10 10 0 0 1 19.296 0 60 60 0 0 0-1.897 3.133 60 60 0 0 0-15.502 0 60 60 0 0 0-1.897-3.133zM73.005 1.426a55 55 0 0 1 93.99 0 60 60 0 0 0-9.89 3.114 45 45 0 0 0-74.21 0 60 60 0 0 0-9.89-3.114zm14.499 5.249a40 40 0 0 1 64.992 0 60 60 0 0 0-8.496 5.325 30 30 0 0 0-48 0 60 60 0 0 0-8.496-5.325zm12.371 8.493a25 25 0 0 1 40.25 0 60 60 0 0 0-7.063 7.458 15 15 0 0 0-26.124 0 60 60 0 0 0-7.063-7.458zm10.477 12.202a10 10 0 0 1 19.296 0 60 60 0 0 0-1.897 3.133 60 60 0 0 0-15.502 0 60 60 0 0 0-1.897-3.133zM50.352-2.630a10 10 0 0 1 19.296 0 60 60 0 0 0-1.897 3.133 60 60 0 0 0-15.502 0 60 60 0 0 0-1.897-3.133z'/%3E%3C/svg%3E")`,
+                    backgroundImage: SEIGAIHA_PATTERN,
                     backgroundSize: '80px 40px'
                 }}
             />
@@ -106,47 +104,43 @@ const PhotoWall: React.FC<{ onPatternLoaded: () => void }> = ({ onPatternLoaded 
     );
 };
 
-const AboutSection: React.FC = () => {
-    const [isPatternLoaded, setIsPatternLoaded] = useState(false);
+const AboutSection: React.FC<{ onAnimationComplete?: () => void; isMobile: boolean }> = ({ onAnimationComplete, isMobile }) => {
     // --- ENTRY ANIMATION VARIANTS ---
     const containerVariants = {
         hidden: { opacity: 0 },
         visible: {
             opacity: 1,
             transition: {
-                staggerChildren: 1.5, // Even clearer gap for narrative
+                staggerChildren: 1.0, // Sequential drop
                 delayChildren: 0.2,
             }
         }
     };
 
-    const infoEntryVariants = {
-        hidden: { y: -100, opacity: 0, scale: 0.95 },
+    const desktopDropVariants = {
+        hidden: { opacity: 0, backdropFilter: "blur(0px)" },
         visible: {
-            y: 0,
             opacity: 1,
-            scale: 1,
+            backdropFilter: "blur(4px)",
             transition: {
-                type: "spring",
-                stiffness: 45,
-                damping: 18
+                duration: 1.0,
+                ease: "linear"
             }
         }
     };
 
-    const photoWallEntryVariants = {
-        hidden: { y: -100, opacity: 0, scale: 0.95 },
+    const mobileDropVariants = {
+        hidden: { opacity: 0 },
         visible: {
-            y: 0,
             opacity: 1,
-            scale: 1,
             transition: {
-                type: "spring",
-                stiffness: 45,
-                damping: 18
+                duration: 1.0,
+                ease: "linear"
             }
         }
     };
+
+    const dropVariants = isMobile ? mobileDropVariants : desktopDropVariants;
 
     return (
         <section id="about" className="relative z-20 md:mt-12 md:mb-6 px-6 md:px-12 flex justify-center items-center scroll-mt-32">
@@ -159,25 +153,22 @@ const AboutSection: React.FC = () => {
             >
                 {/* Left: Glassmorphism Text Container */}
                 <motion.div
-                    variants={infoEntryVariants}
-                    whileHover={{
-                        backgroundColor: "rgba(255, 255, 255, 0.08)",
-                        borderColor: "rgba(255, 255, 255, 0.3)"
+                    variants={dropVariants}
+                    animate={{
+                        y: [0, -10, 0],
+                        rotate: [-0.5, 0.5, -0.5],
                     }}
-                    className="relative flex-1 bg-white/10 border border-white/10 rounded-[2.5rem] p-6 md:p-12 flex flex-col justify-center shadow-2xl overflow-hidden group transform-gpu"
+                    transition={{
+                        y: { duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1.2 },
+                        rotate: { duration: 12, repeat: Infinity, ease: "easeInOut", delay: 1.2 }
+                    }}
+                    className="relative flex-1 bg-black/20 backdrop-blur-md border border-white/20 rounded-[2.5rem] p-6 md:p-12 flex flex-col justify-center shadow-2xl overflow-hidden group transform-gpu"
                 >
                     {/* Seigaiha Pattern Overlay */}
-                    <motion.div
-                        variants={{
-                            hidden: { opacity: 0 },
-                            visible: {
-                                opacity: 0.02,
-                                transition: { duration: 1.5, ease: "easeOut" }
-                            }
-                        }}
-                        className="absolute inset-0 pointer-events-none z-0 transition-opacity group-hover:opacity-[0.04]"
+                    <div
+                        className="absolute inset-0 pointer-events-none z-0 transition-opacity group-hover:opacity-[0.04] opacity-[0.02]"
                         style={{
-                            backgroundImage: `url("data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' width='120' height='60' viewBox='0 0 120 60'%3E%3Cpath fill='%23ffffff' d='M13.005 31.426a55 55 0 0 1 93.99 0 60 60 0 0 0-9.89 3.114 45 45 0 0 0-74.21 0 60 60 0 0 0-9.89-3.114zm14.499 5.249a40 40 0 0 1 64.992 0 60 60 0 0 0-8.496 5.325 30 30 0 0 0-48 0 60 60 0 0 0-8.496-5.325zm12.371 8.493a25 25 0 0 1 40.25 0 60 60 0 0 0-7.063 7.458 15 15 0 0 0-26.124 0 60 60 0 0 0-7.063-7.458zm10.477 12.202a10 10 0 0 1 19.296 0 60 60 0 0 0-1.897 3.133 60 60 0 0 0-15.502 0 60 60 0 0 0-1.897-3.133zM-46.995 61.426a55 55 0 0 1 93.99 0 60 60 0 0 0-9.89 3.114 45 45 0 0 0-74.21 0 60 60 0 0 0-9.89-3.114zm14.499 5.249a40 40 0 0 1 64.992 0 60 60 0 0 0-8.496 5.325 30 30 0 0 0-48 0 60 60 0 0 0-8.496-5.325zM73.005 61.426a55 55 0 0 1 93.99 0 60 60 0 0 0-9.89 3.114 45 45 0 0 0-74.21 0 60 60 0 0 0-9.89-3.114zm14.499 5.249a40 40 0 0 1 64.992 0 60 60 0 0 0-8.496 5.325 30 30 0 0 0-48 0 60 60 0 0 0-8.496-5.325zM-46.995 1.426a55 55 0 0 1 93.99 0 60 60 0 0 0-9.89 3.114 45 45 0 0 0-74.21 0 60 60 0 0 0-9.89-3.114zm14.499 5.249a40 40 0 0 1 64.992 0 60 60 0 0 0-8.496 5.325 30 30 0 0 0-48 0 60 60 0 0 0-8.496-5.325zm12.371 8.493a25 25 0 0 1 40.25 0 60 60 0 0 0-7.063 7.458 15 15 0 0 0-26.124 0 60 60 0 0 0-7.063-7.458zm10.477 12.202a10 10 0 0 1 19.296 0 60 60 0 0 0-1.897 3.133 60 60 0 0 0-15.502 0 60 60 0 0 0-1.897-3.133zM73.005 1.426a55 55 0 0 1 93.99 0 60 60 0 0 0-9.89 3.114 45 45 0 0 0-74.21 0 60 60 0 0 0-9.89-3.114zm14.499 5.249a40 40 0 0 1 64.992 0 60 60 0 0 0-8.496 5.325 30 30 0 0 0-48 0 60 60 0 0 0-8.496-5.325zm12.371 8.493a25 25 0 0 1 40.25 0 60 60 0 0 0-7.063 7.458 15 15 0 0 0-26.124 0 60 60 0 0 0-7.063-7.458zm10.477 12.202a10 10 0 0 1 19.296 0 60 60 0 0 0-1.897 3.133 60 60 0 0 0-15.502 0 60 60 0 0 0-1.897-3.133zM50.352-2.630a10 10 0 0 1 19.296 0 60 60 0 0 0-1.897 3.133 60 60 0 0 0-15.502 0 60 60 0 0 0-1.897-3.133z'/%3E%3C/svg%3E")`,
+                            backgroundImage: SEIGAIHA_PATTERN,
                             backgroundSize: '80px 40px'
                         }}
                     />
@@ -193,7 +184,7 @@ const AboutSection: React.FC = () => {
                     </div>
 
                     <div className="relative z-10 space-y-4 md:space-y-6">
-                        <p className="text-gray-300 leading-relaxed text-xs md:text-base font-light border-l-2 border-white/20 pl-4 whitespace-pre-line laser-text">
+                        <p className="text-gray-100 leading-relaxed text-sm md:text-base font-medium border-l-2 border-white/20 pl-4 whitespace-pre-line laser-text">
                             {ABOUT.description}
                         </p>
 
@@ -217,7 +208,7 @@ const AboutSection: React.FC = () => {
                                 </h4>
                                 <div className="flex flex-wrap gap-1.5">
                                     {ABOUT.tags.interestList.map((interest, idx) => (
-                                        <span key={idx} className="text-[10px] bg-white/10 px-2 py-0.5 rounded-full text-gray-300 border border-white/5 laser-text">
+                                        <span key={idx} className="text-[10px] bg-black/40 px-2 py-0.5 rounded-full text-gray-300 border border-white/5 laser-text">
                                             {interest}
                                         </span>
                                     ))}
@@ -226,11 +217,11 @@ const AboutSection: React.FC = () => {
                         </div>
 
                         <div className="pt-4 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                            <a href={`mailto:${SITE_META.email}`} className="px-5 py-2.5 bg-white text-black rounded-full font-bold text-[10px] tracking-widest hover:bg-gradient-to-r hover:from-cyan-500 hover:to-indigo-600 hover:text-white transition-all duration-300 flex items-center gap-2">
+                            <a href={`mailto:${SITE_META.email}`} className="px-5 py-2.5 bg-white text-black rounded-full font-bold text-xs tracking-widest hover:bg-gradient-to-r hover:from-cyan-500 hover:to-indigo-600 hover:text-white transition-all duration-300 flex items-center gap-2">
                                 {ABOUT.ctaButton}
                                 <ArrowUpRightIcon />
                             </a>
-                            <div className="flex items-center gap-2 text-[10px] text-gray-400">
+                            <div className="flex items-center gap-2 text-xs text-gray-200">
                                 <MessageCircle className="w-4 h-4" />
                                 <span>WeChat: <span className="text-white font-mono">{ABOUT.wechatId}</span></span>
                             </div>
@@ -240,29 +231,39 @@ const AboutSection: React.FC = () => {
 
                 {/* Right: Dynamic Photo Wall */}
                 <motion.div
-                    variants={photoWallEntryVariants}
+                    variants={dropVariants}
+                    onAnimationComplete={() => onAnimationComplete?.()}
                     className="w-full md:flex-1 md:max-w-[450px] flex-shrink-0 flex"
                 >
                     <motion.div
-                        animate={isPatternLoaded ? {
+                        animate={{
                             y: [0, -25, 0],
+                            x: [0, 3, -3, 0],
                             rotate: [1, -1.5, 1.5, 1],
-                        } : {}}
+                        }}
                         transition={{
                             y: {
                                 duration: 8,
                                 repeat: Infinity,
-                                ease: "easeInOut"
+                                ease: "easeInOut",
+                                delay: 2.2
+                            },
+                            x: {
+                                duration: 10,
+                                repeat: Infinity,
+                                ease: "easeInOut",
+                                delay: 2.2
                             },
                             rotate: {
                                 duration: 11,
                                 repeat: Infinity,
-                                ease: "easeInOut"
+                                ease: "easeInOut",
+                                delay: 2.2
                             }
                         }}
                         className="w-full h-full"
                     >
-                        <PhotoWall onPatternLoaded={() => setIsPatternLoaded(true)} />
+                        <PhotoWall />
                     </motion.div>
                 </motion.div>
             </motion.div>

@@ -222,6 +222,7 @@ const ProjectGallery: React.FC<ProjectGalleryProps> = () => {
                 <motion.div
                   variants={desktopCardVariants}
                   custom={0}
+                  style={{ opacity: myWorkOpacity }}
                   className="relative w-full h-full bg-gradient-to-br from-black/20 to-black/10 border border-white/10 rounded-[2rem] shadow-2xl p-6 flex flex-col justify-between group cursor-default overflow-hidden"
                 >
                   <div className="absolute inset-0 opacity-[0.02] pointer-events-none z-0 transition-opacity group-hover:opacity-[0.04]"

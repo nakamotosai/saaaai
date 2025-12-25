@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { PROJECTS, PROFILE, SITE_META, SEIGAIHA_PATTERN } from '../constants';
-import { ArrowRight, MapPin, Clock, MessageSquare, User, ChevronRight } from 'lucide-react';
+import { ArrowRight, MapPin, Clock, MessageSquare, User, ChevronRight, ArrowDown } from 'lucide-react';
 
 interface ProjectGalleryProps { }
 
@@ -194,6 +194,20 @@ const ProjectGallery: React.FC<ProjectGalleryProps> = () => {
               </div>
             </motion.a>
           ))}
+          <motion.div
+            className="snap-center shrink-0 w-[20vw] h-[520px] flex flex-col items-center justify-center gap-6 opacity-60 ml-2"
+            onViewportEnter={() => {
+              document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            viewport={{ amount: 0.6 }}
+          >
+            <span className="text-white/40 text-xs font-mono tracking-[0.3em] uppercase rotate-90 whitespace-nowrap">
+              Continue
+            </span>
+            <div className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center animate-bounce">
+              <ArrowDown className="text-white/60" size={18} />
+            </div>
+          </motion.div>
           <div className="snap-center shrink-0 w-2" />
         </motion.div>
         <div className="flex justify-center w-full mt-6">

@@ -1,5 +1,8 @@
 import { Project } from './types';
 import heroBackground from './assets/hero.jpg';
+import hero1 from './assets/hero1.jpg';
+import hero2 from './assets/hero2.jpg';
+import hero3 from './assets/hero3.jpg';
 import project1 from './assets/1.png';
 import project2 from './assets/2.png';
 import project3 from './assets/3.png';
@@ -17,9 +20,9 @@ import photoH from './assets/h.png';
 // --- 全局图片资源配置 (SITE IMAGES) ---
 // 可以在这里修改网站的背景图、装饰纹理等
 export const SITE_IMAGES = {
-  // 网站主背景图 (Tokyo Urban Night)
-  mainBackground: heroBackground,
-
+  // 网站主背景图组 (Dynamic Backgrounds)
+  backgrounds: [heroBackground, hero1, hero2, hero3],
+  mainBackground: heroBackground, // Fallback
 };
 
 export const PHOTO_WALL = [
@@ -119,9 +122,10 @@ export const PROJECTS: Project[] = [
 
 // --- 社交媒体链接 (SOCIAL) ---
 export const SOCIAL_LINKS = [
-  { platform: "Twitter / X", url: "#" },
+  { platform: "Email: sai@saaaai.com", url: `mailto:${SITE_META.email}` },
   { platform: "WeChat: a16z88", url: "#" },
-  { platform: "GitHub", url: "https://github.com/nakamotosai/" }
+  { platform: "GitHub: @nakamotosai", url: "https://github.com/nakamotosai/" },
+  { platform: "Suno: @nakamotosai", url: "https://suno.com/@nakamotosai" }
 ];
 
 // --- 导航栏链接 (NAV) ---

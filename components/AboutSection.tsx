@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, Heart, MessageCircle } from 'lucide-react';
+import { Users, Heart, MessageCircle, Mail } from 'lucide-react';
 import { ABOUT, SITE_META, PHOTO_WALL, SEIGAIHA_PATTERN } from '../constants';
 
 const PhotoCard: React.FC<{ pair: typeof PHOTO_WALL[0]; index: number }> = ({ pair, index }) => {
@@ -94,8 +94,8 @@ const PhotoWall: React.FC = () => {
             />
 
             {/* Background Decorative Blurs */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-[40px] -mr-16 -mt-16 pointer-events-none" />
-            <div className="absolute bottom-0 left-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-[40px] -ml-16 -mb-16 pointer-events-none" />
+            <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-[40px] -mr-16 -mt-16 pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full blur-[40px] -ml-16 -mb-16 pointer-events-none" />
 
             {PHOTO_WALL.map((pair, idx) => (
                 <PhotoCard key={pair.id} pair={pair} index={idx} />
@@ -174,8 +174,8 @@ const AboutSection: React.FC<{ onAnimationComplete?: () => void; isMobile: boole
                     />
 
                     <div className="relative z-10 mb-3 md:mb-6">
-                        <span className="text-indigo-400 font-mono text-[10px] tracking-widest uppercase flex items-center gap-2 mb-1">
-                            <div className="w-6 h-px bg-indigo-400"></div>
+                        <span className="text-cyan-400 font-mono text-[10px] tracking-widest uppercase flex items-center gap-2 mb-1">
+                            <div className="w-6 h-px bg-cyan-400"></div>
                             Hello There
                         </span>
                         <h2 className="text-4xl md:text-6xl font-black text-white tracking-tighter leading-none mb-1 laser-text">
@@ -192,7 +192,7 @@ const AboutSection: React.FC<{ onAnimationComplete?: () => void; isMobile: boole
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 pt-2">
                             <div>
                                 <h4 className="flex items-center gap-2 text-white font-bold text-sm mb-2 laser-text">
-                                    <Users className="w-4 h-4 text-indigo-400" />
+                                    <Users className="w-4 h-4 text-sky-400" />
                                     {ABOUT.tags.profileTitle}
                                 </h4>
                                 <ul className="space-y-1">
@@ -203,7 +203,7 @@ const AboutSection: React.FC<{ onAnimationComplete?: () => void; isMobile: boole
                             </div>
                             <div>
                                 <h4 className="flex items-center gap-2 text-white font-bold text-sm mb-2 laser-text">
-                                    <Heart className="w-4 h-4 text-pink-400" />
+                                    <Heart className="w-4 h-4 text-pink-500" />
                                     {ABOUT.tags.interestsTitle}
                                 </h4>
                                 <div className="flex flex-wrap gap-1.5">
@@ -216,14 +216,27 @@ const AboutSection: React.FC<{ onAnimationComplete?: () => void; isMobile: boole
                             </div>
                         </div>
 
-                        <div className="pt-4 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                            <a href={`mailto:${SITE_META.email}`} className="px-5 py-2.5 bg-white text-black rounded-full font-bold text-xs tracking-widest hover:bg-gradient-to-r hover:from-cyan-500 hover:to-indigo-600 hover:text-white transition-all duration-300 flex items-center gap-2">
+                        <div className="pt-4 flex flex-col md:flex-row md:items-start lg:items-center gap-6">
+                            <a href={`mailto:${SITE_META.email}`} className="w-fit px-6 py-3 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-full font-bold text-xs tracking-widest hover:bg-white/20 hover:border-white/40 transition-all duration-300 flex items-center gap-2 shadow-xl group h-fit">
                                 {ABOUT.ctaButton}
-                                <ArrowUpRightIcon />
+                                <div className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform">
+                                    <ArrowUpRightIcon />
+                                </div>
                             </a>
-                            <div className="flex items-center gap-2 text-xs text-gray-200">
-                                <MessageCircle className="w-4 h-4" />
-                                <span>WeChat: <span className="text-white font-mono">{ABOUT.wechatId}</span></span>
+
+                            <div className="flex flex-col gap-3">
+                                <div className="flex items-center gap-3 text-xs text-gray-200">
+                                    <MessageCircle className="w-4 h-4 text-emerald-400 shrink-0" />
+                                    <span className="font-medium">WeChat: <span className="text-white font-mono ml-1">{ABOUT.wechatId}</span></span>
+                                </div>
+                                <div className="flex items-center gap-3 text-xs text-gray-200">
+                                    <Mail className="w-4 h-4 text-amber-400 shrink-0" />
+                                    <span className="font-medium">Email:
+                                        <a href={`mailto:${SITE_META.email}`} className="text-white font-mono ml-1 hover:text-cyan-400 transition-colors">
+                                            {SITE_META.email}
+                                        </a>
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>

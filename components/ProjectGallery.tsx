@@ -7,15 +7,19 @@ interface ProjectGalleryProps { }
 
 const ProjectGallery: React.FC<ProjectGalleryProps> = () => {
   const targetRef = useRef<HTMLDivElement>(null);
-  const mobileContainerRef = useRef<HTMLDivElement>(null);
+
+  const [isMobile, setIsMobile] = React.useState(false);
+
+  React.useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const { scrollYProgress } = useScroll({
     target: targetRef,
     offset: ["start start", "end end"]
-  });
-
-  const { scrollXProgress: mobileScrollX } = useScroll({
-    container: mobileContainerRef
   });
 
   const smoothProgress = useSpring(scrollYProgress, {
@@ -25,18 +29,19 @@ const ProjectGallery: React.FC<ProjectGalleryProps> = () => {
     restDelta: 0.001
   });
 
-  const x = useTransform(smoothProgress, [0, 1], ["0%", "-65%"], { clamp: true });
+  const xRange = isMobile ? "-82%" : "-65%";
+  const x = useTransform(smoothProgress, [0, 1], ["0%", xRange], { clamp: true });
   const myWorkOpacity = useTransform(smoothProgress, [0, 0.4], [1, 0], { clamp: true });
   const indicatorLeft = useTransform(smoothProgress, [0, 1], ["0.5%", "80.5%"], { clamp: true });
   const scrollBarOpacity = useTransform(smoothProgress, [0.95, 1], [1, 0], { clamp: true });
-  const mobileThumbLeft = useTransform(mobileScrollX, [0, 1], ["0.5%", "80.5%"]);
+  const mobileThumbLeft = useTransform(smoothProgress, [0, 1], ["0.5%", "80.5%"]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0, // We use custom delays for strict 1s cadence
+        staggerChildren: 0,
         delayChildren: 0
       }
     }
@@ -60,159 +65,166 @@ const ProjectGallery: React.FC<ProjectGalleryProps> = () => {
     })
   };
 
-  // Mobile optimization: Remove expensive backdrop-filter animation
   const mobileCardVariants = {
-    hidden: { opacity: 0 },
+    hidden: { opacity: 0, y: 0, x: 0, rotate: 0 },
     visible: (i: number) => ({
       opacity: 1,
+      y: i === 0 ? [0, -12, 0] : 0,
+      x: i === 0 ? [0, 3, -3, 0] : 0,
+      rotate: i === 0 ? [0.5, -0.5, 0.5] : 0,
       transition: {
-        duration: 1.0,
-        ease: "easeOut",
-        delay: 1.0 + i,
+        opacity: { duration: 1.0, ease: "easeOut", delay: 1.0 + i },
+        y: i === 0 ? { duration: 6, repeat: Infinity, ease: "easeInOut", delay: 2.0 } : {},
+        x: i === 0 ? { duration: 7, repeat: Infinity, ease: "easeInOut", delay: 2.0 } : {},
+        rotate: i === 0 ? { duration: 9, repeat: Infinity, ease: "easeInOut", delay: 2.0 } : {},
       }
     })
   };
 
   return (
-    <section ref={targetRef} id="projects" className="relative h-auto md:h-[250vh] md:min-h-screen bg-transparent">
+    <section ref={targetRef} id="projects" className="relative h-[450vh] md:h-[250vh] md:min-h-screen bg-transparent">
       {/* MOBILE LAYOUT */}
-      <div className="md:hidden pt-28 px-6 flex flex-col">
-        <motion.div
-          ref={mobileContainerRef}
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="flex overflow-x-auto snap-x snap-mandatory px-6 gap-3 w-full hide-scrollbar items-center"
-        >
-          {/* Profile / Intro Card */}
-          <motion.div
-            variants={mobileCardVariants}
-            custom={0}
-            className="snap-center shrink-0 w-[85vw] max-w-[320px] h-[520px] relative rounded-[2rem] overflow-hidden bg-black/20 backdrop-blur-md border border-white/10 shadow-2xl flex flex-col justify-between p-8"
-          >
-            <div className="absolute inset-0 opacity-[0.04] pointer-events-none z-0"
-              style={{
-                backgroundImage: SEIGAIHA_PATTERN,
-                backgroundSize: '80px 40px'
-              }}
-            />
-
-            <div className="relative z-10 flex flex-col h-full">
-              {/* Header */}
-              <div className="flex items-center justify-between mb-6">
-                <div className="px-3 py-1.5 rounded-full bg-white/20 border border-white/20 text-xs font-mono text-indigo-100 tracking-widest uppercase">
-                  Selected Works
-                </div>
-                <div className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse" />
-              </div>
-
-              {/* Title */}
-              <div className="mb-8">
-                <h2 className="text-5xl font-black text-white tracking-tighter leading-[0.9]">
-                  <span className="block laser-text opacity-90">我的</span>
-                  <span className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-500 to-purple-500 animate-gradient-text">作品</span>
-                </h2>
-              </div>
-
-              {/* Passport Info */}
-              <div className="flex flex-col gap-5 mt-auto mb-8">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center border border-white/20">
-                    <User className="w-5 h-5 text-indigo-200" />
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-[10px] text-white/50 uppercase tracking-wider font-mono">Name</span>
-                    <span className="text-base font-bold text-white laser-text">{PROFILE.name}</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center border border-white/20">
-                    <MapPin className="w-5 h-5 text-indigo-200" />
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-[10px] text-white/50 uppercase tracking-wider font-mono">Location</span>
-                    <span className="text-sm font-medium text-white laser-text">{PROFILE.role}</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center border border-white/20">
-                    <Clock className="w-5 h-5 text-indigo-200" />
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-[10px] text-white/50 uppercase tracking-wider font-mono">Experience</span>
-                    <span className="text-sm font-medium text-white laser-text">旅居日本 <span className="text-indigo-200 font-bold">{PROFILE.yearsInJapan}</span></span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Footer Action */}
-              <div className="pt-6 border-t border-white/10 flex items-center justify-between">
-                <span className="text-xs font-mono text-white/60 tracking-[0.2em] uppercase">向右滑动探索</span>
-                <motion.div
-                  animate={{ x: [0, 5, 0] }}
-                  transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                  className="w-10 h-10 rounded-full bg-indigo-500/20 flex items-center justify-center border border-indigo-500/30"
-                >
-                  <ArrowRight size={18} className="text-indigo-200" />
-                </motion.div>
-              </div>
-            </div>
-          </motion.div>
-
-          {PROJECTS.map((project, idx) => (
-            <motion.a
-              key={project.id}
-              variants={mobileCardVariants}
-              custom={idx + 1}
-              href={project.url || '#'}
-              className="snap-center shrink-0 w-[85vw] max-w-[320px] h-[520px] relative group overflow-hidden rounded-[2rem] bg-black/20 backdrop-blur-md border border-white/10 shadow-2xl flex flex-col"
+      <div className="md:hidden sticky top-0 h-screen overflow-hidden">
+        <div className="relative z-10 w-full h-full flex flex-col pt-24 pb-12">
+          <div className="flex-1 flex flex-col justify-center w-full min-h-0">
+            <motion.div
+              style={{ x }}
+              className="flex flex-nowrap items-center px-10 gap-4 w-max h-[520px]"
             >
-              <div className="absolute inset-0 opacity-[0.04] pointer-events-none z-0 transition-opacity group-hover:opacity-[0.04]"
-                style={{
-                  backgroundImage: SEIGAIHA_PATTERN,
-                  backgroundSize: '80px 40px'
-                }}
-              />
-              <div className="h-[70%] w-full overflow-hidden relative">
-                <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60" />
-              </div>
-              <div className="h-[30%] p-6 flex items-center justify-between bg-black/20 border-t border-white/10 relative overflow-hidden transition-colors group-active:bg-white/10">
-                <div className="relative z-10 flex flex-col gap-2">
-                  <h3 className="text-2xl font-bold text-white leading-tight laser-text">{project.title}</h3>
-                  <div className="flex flex-col gap-1">
-                    <span className="text-xs font-mono text-indigo-300 tracking-wider uppercase leading-none laser-text">{project.category}</span>
-                    <p className="text-xs font-mono text-white/60 tracking-wider uppercase leading-none laser-text">{project.description}</p>
+              {/* Profile / Intro Card */}
+              <motion.div
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                className="shrink-0 w-[85vw] max-w-[320px] h-full relative group transform-gpu"
+              >
+                <motion.div
+                  variants={mobileCardVariants}
+                  animate="visible"
+                  initial="hidden"
+                  custom={0}
+                  className="w-full h-full relative rounded-[2rem] overflow-hidden bg-black/20 backdrop-blur-md border border-white/10 shadow-2xl flex flex-col justify-between p-8"
+                >
+                  <div className="absolute inset-0 opacity-[0.04] pointer-events-none z-0"
+                    style={{
+                      backgroundImage: SEIGAIHA_PATTERN,
+                      backgroundSize: '80px 40px'
+                    }}
+                  />
+
+                  <div className="relative z-10 flex flex-col h-full">
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="px-3 py-1.5 rounded-full bg-white/20 border border-white/20 text-xs font-mono text-indigo-100 tracking-widest uppercase">
+                        Ongoing Projects
+                      </div>
+                      <div className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse" />
+                    </div>
+
+                    <div className="mb-8">
+                      <h2 className="text-4xl font-black text-white tracking-tighter leading-[0.9]">
+                        <span className="block laser-text opacity-90">进行中的</span>
+                        <span className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-500 to-purple-500 animate-gradient-text mt-2">项目及作品</span>
+                      </h2>
+                    </div>
+
+                    <div className="flex flex-col gap-5 mt-auto mb-8">
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center border border-white/20">
+                          <User className="w-5 h-5 text-indigo-200" />
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-[10px] text-white/50 uppercase tracking-wider font-mono">Name</span>
+                          <span className="text-base font-bold text-white laser-text">{PROFILE.name}</span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center border border-white/20">
+                          <MapPin className="w-5 h-5 text-indigo-200" />
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-[10px] text-white/50 uppercase tracking-wider font-mono">Location</span>
+                          <span className="text-sm font-medium text-white laser-text">{PROFILE.role}</span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center border border-white/20">
+                          <Clock className="w-5 h-5 text-indigo-200" />
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-[10px] text-white/50 uppercase tracking-wider font-mono">Experience</span>
+                          <span className="text-sm font-medium text-white laser-text">旅居日本 <span className="text-white/80 font-bold">{PROFILE.yearsInJapan}</span></span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between text-white/30 font-mono text-[10px] tracking-widest uppercase border-t border-white/10 pt-4">
+                      <span>Live Stats</span>
+                      <motion.div
+                        animate={{ x: [0, 8, 0] }}
+                        transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                        className="flex items-center justify-center pr-2"
+                      >
+                        <ArrowRight className="text-white/40 group-hover:text-white transition-opacity" size={24} />
+                      </motion.div>
+                    </div>
                   </div>
-                </div>
-                <div className="relative z-10 w-10 h-10 shrink-0 rounded-full bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center">
-                  <ArrowRight className="text-indigo-200" size={20} />
+                </motion.div>
+              </motion.div>
+
+              {PROJECTS.map((project, idx) => (
+                <motion.a
+                  key={project.id}
+                  variants={mobileCardVariants}
+                  custom={idx + 1}
+                  href={project.url || '#'}
+                  className="shrink-0 w-[85vw] max-w-[320px] h-full relative group overflow-hidden rounded-[2rem] bg-black/20 backdrop-blur-md border border-white/10 shadow-2xl flex flex-col"
+                >
+                  <div className="absolute inset-0 opacity-[0.04] pointer-events-none z-0"
+                    style={{
+                      backgroundImage: SEIGAIHA_PATTERN,
+                      backgroundSize: '80px 40px'
+                    }}
+                  />
+                  <div className="h-[70%] w-full overflow-hidden relative">
+                    <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60" />
+                  </div>
+                  <div className="h-[30%] p-6 flex flex-col justify-end bg-black/20 border-t border-white/10 relative overflow-hidden transition-colors group-active:bg-white/10">
+                    <div className="flex items-center justify-between w-full">
+                      <div className="flex flex-col gap-1 max-w-[70%]">
+                        <h3 className="text-2xl font-bold text-white leading-tight laser-text truncate">{project.title}</h3>
+                        <span className="text-xs font-mono text-white/80 tracking-wider uppercase leading-none laser-text truncate">{project.category}</span>
+                      </div>
+                      <motion.div
+                        animate={{ x: [0, 8, 0] }}
+                        transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                        className="flex items-center justify-center pr-2"
+                      >
+                        <ArrowRight className="text-white/40 group-hover:text-white transition-opacity" size={24} />
+                      </motion.div>
+                    </div>
+                  </div>
+                </motion.a>
+              ))}
+
+              {/* End-of-Gallery indicator */}
+              <div className="shrink-0 w-[30vw] flex flex-col items-center justify-center gap-6 opacity-60">
+                <span className="text-white/40 text-xs font-mono tracking-[0.3em] uppercase rotate-90 whitespace-nowrap">
+                  Finished
+                </span>
+                <div className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center">
+                  <ArrowDown className="text-white/60" size={18} />
                 </div>
               </div>
-            </motion.a>
-          ))}
-          <motion.div
-            className="snap-center shrink-0 w-[20vw] h-[520px] flex flex-col items-center justify-center gap-6 opacity-60 ml-2"
-            onViewportEnter={() => {
-              document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
-            }}
-            viewport={{ amount: 0.6 }}
-          >
-            <span className="text-white/40 text-xs font-mono tracking-[0.3em] uppercase rotate-90 whitespace-nowrap">
-              Continue
-            </span>
-            <div className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center animate-bounce">
-              <ArrowDown className="text-white/60" size={18} />
+            </motion.div>
+          </div>
+
+          <div className="flex justify-center w-full mt-10">
+            <div className="h-8 bg-black/20 backdrop-blur-md border border-white/10 rounded-full px-1 flex items-center relative w-[120px]">
+              <motion.div style={{ left: mobileThumbLeft }} className="absolute top-1 bottom-1 w-[19%] bg-white/20 border border-white/20 rounded-full" />
             </div>
-          </motion.div>
-          <div className="snap-center shrink-0 w-2" />
-        </motion.div>
-        <div className="flex justify-center w-full mt-6">
-          <div className="h-8 bg-black/20 backdrop-blur-md border border-white/10 rounded-full px-1 flex items-center relative w-[120px]">
-            <motion.div style={{ left: mobileThumbLeft }} className="absolute top-1 bottom-1 w-[19%] bg-white/20 border border-white/20 rounded-full" />
           </div>
         </div>
       </div>
@@ -231,7 +243,7 @@ const ProjectGallery: React.FC<ProjectGalleryProps> = () => {
               <motion.div
                 variants={desktopCardVariants}
                 custom={0}
-                className="shrink-0 w-[220px] mr-8 md:mr-12 h-full"
+                className="shrink-0 w-[300px] mr-8 md:mr-12 h-full"
               >
                 <motion.div
                   variants={desktopCardVariants}
@@ -249,16 +261,16 @@ const ProjectGallery: React.FC<ProjectGalleryProps> = () => {
                     {/* Decorative Header */}
                     <div className="flex items-center justify-between mb-8">
                       <div className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-mono text-indigo-200 tracking-widest uppercase backdrop-blur-sm">
-                        Selected Works
+                        Ongoing Projects
                       </div>
                       <div className="w-2 h-2 rounded-full bg-indigo-400/50 animate-pulse" />
                     </div>
 
                     {/* Main Title */}
                     <div className="mb-auto relative">
-                      <h2 className="text-5xl font-black text-white tracking-tighter leading-[0.9]">
-                        <span className="block laser-text opacity-90">我的</span>
-                        <span className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-500 to-purple-500 animate-gradient-text">作品</span>
+                      <h2 className="text-4xl font-black text-white tracking-tighter leading-[0.9]">
+                        <span className="block laser-text opacity-90">进行中的</span>
+                        <span className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-500 to-cyan-400 animate-gradient-text mt-2">项目及作品</span>
                       </h2>
                       <div className="absolute -left-6 top-1/2 -px-4 w-1 h-12 bg-indigo-500" />
                     </div>
@@ -305,9 +317,9 @@ const ProjectGallery: React.FC<ProjectGalleryProps> = () => {
                       <motion.div
                         animate={{ x: [0, 5, 0] }}
                         transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                        className="w-8 h-8 rounded-full bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20 group-hover/btn:bg-indigo-500/20 group-hover/btn:border-indigo-500/40 transition-colors"
+                        className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center border border-white/10 group-hover/btn:bg-white/10 group-hover/btn:border-white/20 transition-colors"
                       >
-                        <ArrowRight size={14} className="text-indigo-300" />
+                        <ArrowRight size={14} className="text-white/60" />
                       </motion.div>
                     </div>
                   </div>
@@ -359,9 +371,13 @@ const ProjectCard: React.FC<{ project: typeof PROJECTS[0]; variants: any; index:
             <p className="text-xs font-mono text-white/60 line-clamp-1 laser-text">{project.description}</p>
           </div>
         </div>
-        <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-indigo-500/20 transition-colors">
-          <ArrowRight className="text-white opacity-50 group-hover:opacity-100" size={20} />
-        </div>
+        <motion.div
+          animate={{ x: [0, 8, 0] }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+          className="flex items-center justify-center pr-2"
+        >
+          <ArrowRight className="text-white/20 group-hover:text-white/90 transition-all duration-300" size={24} />
+        </motion.div>
       </div>
     </motion.a>
   );

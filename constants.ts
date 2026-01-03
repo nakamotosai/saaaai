@@ -87,6 +87,14 @@ export const PROJECTS: Project[] = [
     url: "https://cn.saaaai.com/"
   },
   {
+    id: 5,
+    title: "乌托邦 UTOPIA",
+    category: "全世界匿名聊天室",
+    image: project5,
+    description: "一个树洞，阅后即焚，畅所欲言",
+    url: "https://utopia.saaaai.com/"
+  },
+  {
     id: 2,
     title: "中日说",
     category: "说中文出日文的AI输入助手",
@@ -109,14 +117,6 @@ export const PROJECTS: Project[] = [
     image: project4,
     description: "（早期开发阶段，敬请期待）",
     url: "https://jp.saaaai.com/"
-  },
-  {
-    id: 5,
-    title: "毒舌戒烟",
-    category: "一个想骂醒你的AI戒烟助手",
-    image: project5,
-    description: "（早期开发阶段，敬请期待）",
-    url: "https://quit.saaaai.com/"
   }
 ];
 

@@ -103,20 +103,20 @@ export const PROJECTS: Project[] = [
     url: "https://input.saaaai.com/"
   },
   {
+    id: 4,
+    title: "読み YOMI",
+    category: "拆分并AI免费解读任何日语文章",
+    image: project4,
+    description: "做你的日语学习总控制台",
+    url: "https://yomi.saaaai.com/"
+  },
+  {
     id: 3,
     title: "假装在东京",
     category: "移民日本以来200多篇心得记录",
     image: project3,
     description: "一路走来，感谢各位支持",
     url: "https://mp.weixin.qq.com/s/aBGdpk2tCOny1RPp4S58PQ"
-  },
-  {
-    id: 4,
-    title: "心流日语",
-    category: "基于SRS原理极速背日语单词",
-    image: project4,
-    description: "（早期开发阶段，敬请期待）",
-    url: "https://jp.saaaai.com/"
   }
 ];
 
